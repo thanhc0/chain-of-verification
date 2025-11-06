@@ -15,8 +15,8 @@ load_dotenv()
 # --- Config ---
 INPUT_FILE = "TruthfulQA_200.csv"
 OUTPUT_FILE = "TruthfulQA_200.csv"
-#OLLAMA_MODEL_NAME = "gpt-oss:20b"
-OLLAMA_MODEL_NAME = "gemma3:1b"
+OLLAMA_MODEL_NAME = "gpt-oss:20b"
+#OLLAMA_MODEL_NAME = "gemma3:1b"
 LLM_TEMP = 0.1
 SAVE_EVERY = 5  # checkpoint every N processed rows
 SLEEP_BETWEEN_CALLS = 0.2  # throttle

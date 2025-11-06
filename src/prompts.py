@@ -1,4 +1,12 @@
 ######################################################################## BASELINE PROMPTS ########################################################################
+BASELINE_PROMPT_SINGLEFACT = """Answer the below question correctly and concisely in one factual sentence.
+Do not provide explanations, context, or multiple answers.
+
+Question: {original_question}
+
+Answer:"""
+
+
 BASELINE_PROMPT_WIKI = """Answer the below question which is asking for a list of entities (names, places, locations etc). Output should be a numbered list and only contains the relevant & concise enitites as answer. NO ADDITIONAL DETAILS.
 
 Question: {original_question}
@@ -18,6 +26,19 @@ Question: {original_question}
 Answer:"""
 
 ################################################################### PLAN VERIFICATION PROMPTS ###################################################################
+VERIFICATION_QUESTION_PROMPT_SINGLEFACT = """Your task is to create one or two verification questions based on the below question and baseline response.
+They should be simple factual yes/no questions to verify the truth of the statement.
+
+Example Question: Who discovered penicillin?
+Example Baseline Response: Alexander Fleming.
+Example Verification Question: Was penicillin discovered by Alexander Fleming?
+
+Actual Question: {original_question}
+Baseline Response: {baseline_response}
+
+Final Verification Questions:"""
+
+
 VERIFICATION_QUESTION_TEMPLATE_PROMPT_WIKI = """Your task is to create a verification question based on the below question provided.
 Example Question: Who are some movie actors who were born in Boston?
 Example Verification Question: Was [movie actor] born in [Boston]
@@ -54,7 +75,7 @@ Example Baseline Response: Johannes Gutenberg, 1450.
 Example Verification Questions: 1. Did Johannes Gutenberg invent first printing press?
 2. Did Johannes Gutenberg invent first printing press in the year 1450?
 
-Explanation: The verification questions are highly aligned with both the qctual question and baseline response. The actual question is comprises of multiple independent questions which in turn has multiple independent answers in the baseline response. Hence, the verification questions should also be independent for factual verification.
+Explanation: The verification questions are highly aligned with both the actual question and baseline response. The actual question is comprises of multiple independent questions which in turn has multiple independent answers in the baseline response. Hence, the verification questions should also be independent for factual verification.
 
 Actual Question: {original_question}
 Baseline Response: {baseline_response}
@@ -97,35 +118,33 @@ Verification Questions & Answer Pairs:
 Final Refined Answer:"""
 
 ################################################################## ROUTER PROMPTS ##################################################################
-ROUTER_CHAIN_PROMPT = """Please classify the below question in on of the following categories. The output should be a JSON as shown in the Examples.
+ROUTER_CHAIN_PROMPT = """Please classify the below question in one of the following categories. 
+The output should be a JSON as shown in the Examples.
 
 Categories:
-WIKI_CHAIN: Good for answering questions which asks for a list or set of entites as its answer. 
-MULTI_CHAIN: Good for answering questions which  comprises of questions that have multiple independent answers (derived from a series of multiple discontiguous spans in the text) and multiple questions are asked in the original question.
+WIKI_CHAIN: Good for answering questions which ask for a list or set of entities as its answer. 
+MULTI_CHAIN: Good for answering questions which comprise of multiple independent answers (derived from multiple discontiguous spans in the text) and multiple questions are asked in the original question.
 LONG_CHAIN: Good for answering questions whose answer is long.
+SINGLEFACT_CHAIN: Good for short factual questions that require only one simple answer.
 
 Examples:
 WIKI_CHAIN:
-    Question: Name some Endemic orchids of Vietnam.
-    JSON Output: {{"category": "WIKI_CHAIN"}}
-    Question: Who are the scientist won nobel prize in the year 1970?
-    JSON Output: {{"category": "WIKI_CHAIN"}}
-    Question: List some cricket players who are playing in indian cricket team.
-    JSON Output: {{"category": "WIKI_CHAIN"}}
+    Question: Name some endemic orchids of Vietnam.
+    JSON Output: {{ "category": "WIKI_CHAIN" }}
+    Question: Who are the scientists who won the Nobel Prize in the year 1970?
+    JSON Output: {{ "category": "WIKI_CHAIN" }}
 MULTI_CHAIN:
     Question: Who is known for developing the theory of relativity, and in which year was it introduced?
-    JSON Output: {{"category": "MULTI_CHAIN"}}
-    Question: Who is credited with inventing the telephone, and when did this invention take place?
-    JSON Output: {{"category": "MULTI_CHAIN"}}
-    Question: Who was the first person to orbit the Earth in space, and during which year did this historic event occur?
-    JSON Output: {{"category": "MULTI_CHAIN"}}
+    JSON Output: {{ "category": "MULTI_CHAIN" }}
 LONG_CHAIN:
     Question: Write few lines about Einstein.
-    JSON Output: {{"category": "LONG_CHAIN"}}
-    Question: Tell me in short about first moon landing.
-    JSON Output: {{"category": "LONG_CHAIN"}}
-    Question: Write a short biography of Carl Marx.
-    JSON Output: {{"category": "LONG_CHAIN"}}
-    
-Actual Question: {}
+    JSON Output: {{ "category": "LONG_CHAIN" }}
+SINGLEFACT_CHAIN:
+    Question: Who discovered penicillin?
+    JSON Output: {{ "category": "SINGLEFACT_CHAIN" }}
+    Question: What is the capital of Japan?
+    JSON Output: {{ "category": "SINGLEFACT_CHAIN" }}
+
+Actual Question: {question}
 Final JSON Output:"""
+
